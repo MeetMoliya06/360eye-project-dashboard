@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Check, Copy, Unlock } from 'lucide-react';
 import { PROJECTS } from './data/projects';
 
