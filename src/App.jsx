@@ -54,8 +54,14 @@ function CartridgeCard({ project }) {
 
   return (
     <article className={`cartridge-shell tone-${project.tone}`}>
-      <div className="cartridge-card" style={{ '--tilt': `${project.tilt}deg` }}>
-        <div className="status-badge">{project.status}</div>
+      <a
+        className="cartridge-card"
+        style={{ '--tilt': `${project.tilt}deg` }}
+        href={project.stagingUrl}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`Open ${project.title}`}
+      >
         <div className="cartridge-top" />
         <div className="cartridge-content">
           <div className="label-window">
@@ -66,26 +72,11 @@ function CartridgeCard({ project }) {
           <h2>{project.title}</h2>
           <p className="credits">Developer: {project.developer}</p>
 
-          <div className="genre-row">
-            {project.genres.map((tag) => (
-              <span key={tag} className="genre-chip">
-                {tag}
-              </span>
-            ))}
-          </div>
-
           <section className="cheat-panel" aria-label="Card info">
             <div className="cheat-head">
               <span>CARD INFO</span>
-              <span>DEMO ACCESS</span>
+              <span>ACCESS</span>
             </div>
-
-            <InfoRow
-              label="PROJECT ID"
-              value={project.projectId}
-              copied={copied === 'id'}
-              onCopy={() => copy(project.projectId, 'id')}
-            />
 
             <InfoRow
               label="STAGING"
@@ -119,7 +110,7 @@ function CartridgeCard({ project }) {
           <span />
           <span />
         </div>
-      </div>
+      </a>
     </article>
   );
 }
