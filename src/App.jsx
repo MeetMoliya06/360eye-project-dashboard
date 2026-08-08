@@ -1,64 +1,146 @@
-import React from 'react';
+import { Check, Copy, Unlock } from 'lucide-react';
 import { PROJECTS } from './data/projects';
-import Cartridge from './components/Cartridge';
-import { Gamepad2 } from 'lucide-react';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col relative bg-[var(--charcoal)]">
-      
-      {/* HEADER: Compact, Full-Width Console Header */}
-      <header className="w-full relative z-20 border-b border-[rgba(232,184,75,0.2)] bg-[var(--charcoal-mid)] shadow-[0_4px_20px_rgba(0,0,0,0.4)]">
-        <div className="w-full px-4 md:px-8 py-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-start gap-6 md:gap-12">
-            
-            {/* Branding / Title */}
-            <div className="flex items-center gap-4 shrink-0">
-              <Gamepad2 size={32} className="text-mustard blink" />
-              <div>
-                <h1 className="font-pixel text-xl md:text-2xl text-mustard tracking-wide uppercase drop-shadow-[2px_2px_0_rgba(0,0,0,0.8)] leading-tight">
-                  SELECT PROJECT
-                </h1>
-                <p className="font-mono text-[10px] md:text-xs text-muted mt-1 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-teal shadow-[0_0_8px_rgba(58,181,168,0.8)]"></span>
-                  SYS_VER: 4.0.1 // STATUS: ONLINE
-                </p>
-              </div>
+    <div className="app-shell">
+      <div className="noise" aria-hidden="true" />
+      <div className="scanlines" aria-hidden="true" />
+      <div className="page-wrap">
+        <header className="header-shell">
+          <div className="header-row">
+            <div>
+              <p className="eyebrow">Showcase360 Systems</p>
+              <h1>SELECT PROJECT - 360EYE ARCHIVE</h1>
+            </div>
+            <a className="logout-button" href="/logout">
+              <Unlock size={14} />
+              LOCK
+            </a>
+          </div>
+          <div className="pixel-divider" />
+        </header>
+
+        <main className="main-shell">
+          <div className="meta-row">
+            <span>{PROJECTS.length} PROJECTS READY</span>
+          </div>
+
+          <section className="cartridge-grid" aria-label="Project shelf">
+            {PROJECTS.map((project) => (
+              <CartridgeCard key={project.projectId} project={project} />
+            ))}
+          </section>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function CartridgeCard({ project }) {
+  const [copied, setCopied] = useState('');
+
+  const copy = async (text, key) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(key);
+      window.clearTimeout(copy.timer);
+      copy.timer = window.setTimeout(() => setCopied(''), 1200);
+    } catch {
+      setCopied('');
+    }
+  };
+
+  return (
+    <article className={`cartridge-shell tone-${project.tone}`}>
+      <div className="cartridge-card" style={{ '--tilt': `${project.tilt}deg` }}>
+        <div className="status-badge">{project.status}</div>
+        <div className="cartridge-top" />
+        <div className="cartridge-content">
+          <div className="label-window">
+            <div className={`label-art art-${project.art}`} aria-hidden="true" />
+            <div className="label-gloss" aria-hidden="true" />
+          </div>
+
+          <h2>{project.title}</h2>
+          <p className="credits">Developer: {project.developer}</p>
+
+          <div className="genre-row">
+            {project.genres.map((tag) => (
+              <span key={tag} className="genre-chip">
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <section className="cheat-panel" aria-label="Card info">
+            <div className="cheat-head">
+              <span>CARD INFO</span>
+              <span>DEMO ACCESS</span>
             </div>
 
-          </div>
+            <InfoRow
+              label="PROJECT ID"
+              value={project.projectId}
+              copied={copied === 'id'}
+              onCopy={() => copy(project.projectId, 'id')}
+            />
+
+            <InfoRow
+              label="STAGING"
+              value={project.stagingUrl}
+              copied={copied === 'url'}
+              onCopy={() => copy(project.stagingUrl, 'url')}
+              link
+            />
+
+            {project.username ? (
+              <InfoRow
+                label="USERNAME"
+                value={project.username}
+                copied={copied === 'username'}
+                onCopy={() => copy(project.username, 'username')}
+              />
+            ) : null}
+
+            <InfoRow
+              label="PASSWORD"
+              value={project.password}
+              copied={copied === 'password'}
+              onCopy={() => copy(project.password, 'password')}
+            />
+          </section>
         </div>
-      </header>
 
-      {/* MAIN SHELF GRID */}
-      <main className="flex-grow w-full relative z-10 px-4 md:px-8 py-8 md:py-12">
-        {PROJECTS.length === 0 ? (
-           <div className="flex flex-col items-center justify-center py-20 text-center">
-             <Gamepad2 size={48} className="text-charcoal-hi mb-4" />
-             <h2 className="font-pixel text-mustard mb-2 text-xl">NO DATA FOUND</h2>
-             <p className="font-mono text-muted text-xs">ARCHIVE IS EMPTY</p>
-           </div>
+        <div className="cartridge-groove" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function InfoRow({ label, value, copied, onCopy, link = false }) {
+  return (
+    <div className="info-row">
+      <div className="info-copy">
+        <span className="field-label">{label}</span>
+        {link ? (
+          <a href={value} target="_blank" rel="noreferrer">
+            {value}
+          </a>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 items-stretch perspective-1000">
-            {PROJECTS.map((project) => {
-              // Generate a stable random micro-tilt for each cartridge (-1 to +1 deg)
-              // We use project.id as a seed to keep it stable across renders
-              const pseudoRandom = Math.sin(project.id * 999) * 10000;
-              const tiltAngle = (pseudoRandom - Math.floor(pseudoRandom)) * 2 - 1; 
-
-              return (
-                <div key={project.id} className="shelf-row h-full">
-                  <Cartridge 
-                    project={project} 
-                    tiltAngle={tiltAngle} 
-                  />
-                </div>
-              )
-            })}
-          </div>
+          <span>{value}</span>
         )}
-      </main>
+      </div>
 
+      <button type="button" className="icon-btn" onClick={onCopy} aria-label={`Copy ${label}`}>
+        {copied ? <Check size={14} /> : <Copy size={14} />}
+        {copied && <span className="copied-popup">COPIED!</span>}
+      </button>
     </div>
   );
 }
