@@ -1,8 +1,15 @@
+// ── Import project screenshots so Vite can bundle them correctly ──
+import imgCopywriter from '../assests/ai_content_generatot.png';
+import imgCms        from '../assests/portfolio_cms.png';
+import imgMapEditor  from '../assests/map-editor.png';
+import imgInsta      from '../assests/ai-social-media-manager.png';
+
 const makeArt = (index) => ['map', 'grid', 'tower', 'tour', 'code', 'drone'][index % 6];
 
 export const PROJECTS = [
   {
     title: '360EYE COPYWRITER AI',
+    image: imgCopywriter,
     client: 'Meet Moliya',
     developer: 'Meet Moliya',
     projectId: 'ID-8841-C',
@@ -18,6 +25,7 @@ export const PROJECTS = [
   },
   {
     title: 'CMS FRONTEND LOGIN',
+    image: imgCms,
     client: 'Aryan Tolani',
     developer: 'Aryan Tolani',
     projectId: 'ID-2914-L',
@@ -34,6 +42,7 @@ export const PROJECTS = [
   },
   {
     title: 'MAP EDITOR',
+    image: imgMapEditor,
     client: 'Prince Mistry',
     developer: 'Prince Mistry',
     projectId: 'ID-5032-M',
@@ -49,6 +58,7 @@ export const PROJECTS = [
   },
   {
     title: 'AI INSTA MANAGER',
+    image: imgInsta,
     client: 'Meet Moliya',
     developer: 'Meet Moliya',
     projectId: 'ID-7448-I',

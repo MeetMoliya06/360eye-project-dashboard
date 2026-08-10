@@ -65,8 +65,22 @@ function CartridgeCard({ project }) {
         <div className="cartridge-top" />
         <div className="cartridge-content">
           <div className="label-window">
-            <div className={`label-art art-${project.art}`} aria-hidden="true" />
-            <div className="label-gloss" aria-hidden="true" />
+            {project.image ? (
+              <>
+                <img
+                  src={project.image}
+                  alt={`${project.title} screenshot`}
+                  className="label-screenshot"
+                />
+                <div className="label-gloss" aria-hidden="true" />
+                <div className="label-scan" aria-hidden="true" />
+              </>
+            ) : (
+              <>
+                <div className={`label-art art-${project.art}`} aria-hidden="true" />
+                <div className="label-gloss" aria-hidden="true" />
+              </>
+            )}
           </div>
 
           <h2>{project.title}</h2>
